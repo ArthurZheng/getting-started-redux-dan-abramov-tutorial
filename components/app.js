@@ -117,6 +117,16 @@ const todos = (state = [], action) => {
           completed: flase
         }
       ];
+    case 'TOGGLE_TODO':
+      return state.map( todo => {
+        if(todo.id !== action.id) {
+          return todo;
+        }
+        return {
+          ...todo,
+          completed: !todo.completed
+        }
+      })
       break;
     default:
       return state;
