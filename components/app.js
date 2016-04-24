@@ -106,27 +106,37 @@ const toggleTodo = (todo) => {
   });
 };
 
+const todo = (state, action) => {
+  switch (action.type) {
+    case 'ADD_TODO':
+      return {
+          id: action.id,
+          text: action.text,
+          completed: flase
+        };
+    case 'TOGGLE_TODO':
+      if(state.id !== action.id) {
+        return state;
+      }
+      return {
+        ...state,
+        completed: !state.completed
+      };
+      default:
+        return state;
+    }
+};
+
 const todos = (state = [], action) => {
   switch (action.type) {
     case 'ADD_TODO':
       return [
         ...state,
-        {
-          id: action.id,
-          text: action.text,
-          completed: flase
-        }
+        todo(undefined, action)
       ];
+      break
     case 'TOGGLE_TODO':
-      return state.map( todo => {
-        if(todo.id !== action.id) {
-          return todo;
-        }
-        return {
-          ...todo,
-          completed: !todo.completed
-        }
-      })
+      return state.map(t => todo(t, action));
       break;
     default:
       return state;
