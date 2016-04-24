@@ -70,6 +70,60 @@ const Counter = ({
   </div>
 );
 
+
+const addCounter = (list) => {
+  // return list.concat([0]);
+  return [...list, 0];
+}
+
+const removeCounter = (list, index) {
+  // return list.slice(0, index).concat(list.slice(index + 1));
+  // return [
+  //   ...list.slice(0, index),
+  //   ...list.slice(index + 1)
+  // ];
+  return [
+    ...list.slice(0, index),
+    list[index] + 1,
+    ...list.slice(index +1)
+  ];
+};
+
+const incrementCounter = (list, index) => {
+  return list
+        .slice(0, index)
+        .contact([list[index] + 1])
+        .concat(list.slice(index + 1));
+};
+
+const toggleTodo = (todo) => {
+  // return {
+  //   ...todo,
+  //   completed: !todo.completed
+  // }
+  return Object.assign({}, todo, {
+    completed: !todo.completed
+  });
+};
+
+const todos = (state = [], action) => {
+  switch (action.type) {
+    case 'ADD_TODO':
+      return [
+        ...state,
+        {
+          id: action.id,
+          text: action.text,
+          completed: flase
+        }
+      ];
+      break;
+    default:
+      return state;
+  }
+};
+
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore } from 'redux';
