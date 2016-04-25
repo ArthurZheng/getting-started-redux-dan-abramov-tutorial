@@ -26,7 +26,7 @@ const todo = (state, action) => {
   }
 }
 
-const todos = (state = [{completed:false, id: 0, text: 'Eat Have Fun'}], action) => {
+const todos = (state = [{completed:false, id: 0, text: 'Eat Have Fun (Default First Item)'}], action) => {
   switch (action.type) {
     case 'ADD_TODO':
       return [
