@@ -156,92 +156,163 @@ const visibilityFilter = (
   }
 };
 
-const todoApp = (state = {}, action) => {
-  return {
-    todos: todos(
-      state.todos,
-      action
-    ),
-    visibilityFilter: visibilityFilter(
-      state.visibilityFilter,
-      action
-    )
-  };
-};
+// this way of combining reducers is so common that Redux provides a combineReducers method;
+// const todoApp = (state = {}, action) => {
+//   return {
+//     todos: todos(
+//       state.todos,
+//       action
+//     ),
+//     visibilityFilter: visibilityFilter(
+//       state.visibilityFilter,
+//       action
+//     )
+//   };
+// };
+//
 
+// reimplement combineReducers comes with Redux;
+// const combineReducers = (reducers) => {
+//   return (state = {}, action) => {
+//     return Object.keys(reducers).reducer(
+//       (nextState, key) => {
+//         nextState[key] = reducer[key](
+//           state[key],
+//           action
+//         );
+//         return nextState;
+//       },
+//       {}
+//     );
+//   };
+// };
+
+import { combineReducers } from 'redux';
+
+// const todoApp = combineReducers({
+//   todos: todos, // maps the field of state to the reducer that manages it
+//   visibilityFilter: visibilityFilter // a mapping between state field and its reducer
+// }); // the results will be assembled into a single state object;
+
+//always call your reducers after the state field they manage, todos: todos, visibilityFilter:visibilityFilter
+// so the combineReducers function can be further reduced to;
+const todoApp = combineReducers({
+  todos,
+  visibilityFilter // ES6 object literal shorthand notation
+});
 
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore } from 'redux';
 
-const store = createStore(counter_reducer);
+// const store = createStore(counter_reducer);
 // const store = createStore(todos);
 // const store = createStore(todoApp);
 
-console.log('Initial State:');
-console.log(store.getState());
-console.log('----------------');
+// console.log('Initial State:');
+// console.log(store.getState());
+// console.log('----------------');
+//
+// console.log('Dispatching ADD_TODO');
+// store.dispatch({
+//   type: 'ADD_TODO',
+//   id: 0,
+//   text: 'Learn Redux'
+// });
+//
+// console.log('current state:');
+// console.log(store.getState());
+// console.log('----------------');
+//
+// console.log('Dispatching ADD_TODO');
+// store.dispatch({
+//   type: 'ADD_TODO',
+//   id: 1,
+//   text: 'Go Shopping'
+// });
+//
+// console.log('current state:');
+// console.log(store.getState());
+// console.log('----------------');
+//
+// console.log('Dispatching TOGGLE_TODO');
+// store.dispatch({
+//   type: 'TOGGLE_TODO',
+//   id: 0,
+// });
+// console.log('current state:');
+// console.log(store.getState());
+// console.log('----------------');
+//
+// console.log('Dispatching SET_VISIBILITY_FILTER');
+// store.dispatch({
+//   type: 'SET_VISIBILITY_FILTER',
+//   filter: 'SHOW_COMPLETED'
+// });
+//
+// console.log('current state:');
+// console.log(store.getState());
+// console.log('----------------');
 
-console.log('Dispatching ADD_TODO');
-store.dispatch({
-  type: 'ADD_TODO',
-  id: 0,
-  text: 'Learn Redux'
-});
 
-console.log('current state:');
-console.log(store.getState());
-console.log('----------------');
+// const render = () => {
+//   ReactDOM.render(
+//     <Counter
+//       value={store.getState()}
+//       onIncrement={() =>
+//         store.dispatch({
+//           type: 'INCREMENT'
+//         })
+//       }
+//       onDecrement={() =>
+//         store.dispatch({
+//           type: 'DECREMENT'
+//         })
+//       }
+//     />,
+//     document.getElementById('react')
+//   );
+// };
 
-console.log('Dispatching ADD_TODO');
-store.dispatch({
-  type: 'ADD_TODO',
-  id: 1,
-  text: 'Go Shopping'
-});
+import { Component } from 'react';
+const store = createStore(todoApp);
 
-console.log('current state:');
-console.log(store.getState());
-console.log('----------------');
+let nextTodoId = 0;
+class TodoApp extends Component {
+  render(){
+    return (
+      <div>
+        <input ref={node => {
+          this.input = node;
+        }} />
+        <button onClick={() => {
+          store.dispatch({
+            type: 'ADD_TODO',
+            text: this.input.value,
+            id: nextTodoId++
+          });
+          this.input.value = '';
+        }}>
+        Add Todo
+        </button>
 
-console.log('Dispatching TOGGLE_TODO');
-store.dispatch({
-  type: 'TOGGLE_TODO',
-  id: 0,
-});
-console.log('current state:');
-console.log(store.getState());
-console.log('----------------');
-
-console.log('Dispatching SET_VISIBILITY_FILTER');
-store.dispatch({
-  type: 'SET_VISIBILITY_FILTER',
-  filter: 'SHOW_COMPLETED'
-});
-
-console.log('current state:');
-console.log(store.getState());
-console.log('----------------');
-
+        <ul>
+          {this.props.todos.map(todo =>
+            <li key={todo.id}>{todo.text}</li>
+          )}
+        </ul>
+      </div>
+    );
+  }
+}
 
 const render = () => {
   ReactDOM.render(
-    <Counter
-      value={store.getState()}
-      onIncrement={() =>
-        store.dispatch({
-          type: 'INCREMENT'
-        })
-      }
-      onDecrement={() =>
-        store.dispatch({
-          type: 'DECREMENT'
-        })
-      }
+    <TodoApp
+    todos={store.getState().todos}
     />,
     document.getElementById('react')
   );
-};
-
+}
 store.subscribe(render);
 render();
