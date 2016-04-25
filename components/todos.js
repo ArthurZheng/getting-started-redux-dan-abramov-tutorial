@@ -87,6 +87,29 @@ const Filterlink = ({
   );
 };
 
+const AddTodo = ({
+  onAddClick
+}) => {
+    let input;
+
+    return (
+      <div>
+        <input ref={node => {
+          input = node;
+        }} />
+        <button onClick={() => {
+          console.log('button onClick triggered ', input.value);
+
+          onAddClick(input.value)
+          input.value = '';
+
+        }}>
+        + Add Todo
+        </button>
+      </div>
+    )
+};
+
 const getVisibleTodos = (
   todos,
   filter
@@ -152,21 +175,15 @@ class TodoApp extends Component {
 
     return (
       <div>
-        <input ref={node => {
-          this.input = node;
-        }} />
-        <button onClick={() => {
-          console.log('button onClick triggered ', this.input.value);
-          store.dispatch({
-            type: 'ADD_TODO',
-            text: this.input.value,
-            id: nextTodoId++
-          });
-          this.input.value = '';
-
-        }}>
-        + Add Todo
-        </button>
+        <AddTodo
+          onAddClick={text =>
+            store.dispatch({
+              type: 'ADD_TODO',
+              id: nextTodoId++,
+              text
+            })
+          }
+        />
 
         <TodoList
           todos = {visibleTodos}
