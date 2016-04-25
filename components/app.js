@@ -110,38 +110,39 @@ const todo = (state, action) => {
   switch (action.type) {
     case 'ADD_TODO':
       return {
-          id: action.id,
-          text: action.text,
-          completed: flase
-        };
-    case 'TOGGLE_TODO':
-      if(state.id !== action.id) {
-        return state;
-      } else {
-        return Object.assign({}, state, {
-          completed: !state.completed
-        });
+        id: action.id,
+        text: action.text,
+        completed: false
       }
-    default:
-      return state;
-    }
-};
+    case 'TOGGLE_TODO':
+      if (state.id !== action.id) {
+        return state
+      }
 
-const todos = (state = [], action) => {
+      return Object.assign({}, state, {
+        completed: !state.completed
+      })
+    default:
+      return state
+  }
+}
+
+const todos = (state = [{completed:false, id: 0, text: 'Eat Have Fun (Default First Item)'}], action) => {
   switch (action.type) {
     case 'ADD_TODO':
       return [
         ...state,
         todo(undefined, action)
-      ];
-      break
+      ]
     case 'TOGGLE_TODO':
-      return state.map(t => todo(t, action));
-      break;
+      return state.map(t =>
+        todo(t, action)
+      )
     default:
-      return state;
+      return state
   }
-};
+}
+
 
 const visibilityFilter = (
   state = 'SHOW_ALL',

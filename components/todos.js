@@ -85,7 +85,20 @@ class TodoApp extends Component {
 
         <ul>
           {this.props.todos.map(todo =>
-            <li key={todo.id}>{todo.text}</li>
+            <li
+              key={todo.id}
+              onClick = { () => {
+                store.dispatch({
+                  type: 'TOGGLE_TODO',
+                  id: todo.id
+                });
+              }}
+              style = {{textDecoration:
+              todo.completed ?
+              'line-through' :
+              'none'
+            }}
+            >{todo.text}</li>
           )}
         </ul>
       </div>
@@ -102,5 +115,5 @@ const render = () => {
   );
 };
 
-store.subscribe(render);
-render();
+store.subscribe(render); // renders every time each time state changes
+render();// renders initially
